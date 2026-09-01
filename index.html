@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تاريخ المقاومة التونسية | الأستاذ رياض سليمي - أولى ثانوي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+:root{
+  --red:#E70013;
+  --red-dark:#8a0010;
+  --sand:#E8D5B5;
+  --paper:#FFF9EF;
+  --ink:#121212;
+  --glass:rgba(255,255,255,0.06);
+  --glass-b:rgba(255,255,255,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:#0a0707;
+  color:var(--paper);
+  overflow-x:hidden;
+  line-height:1.9;
+}
+#canvas-container{
+  position:fixed;inset:0;z-index:-2;
+}
+#bg{width:100%;height:100%;display:block}
+#vignette{
+  position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(120% 120% at 50% 0%, rgba(231,0,19,0.18) 0%, transparent 60%),
+             radial-gradient(80% 80% at 100% 100%, rgba(232,213,181,0.12) 0%, transparent 50%),
+             linear-gradient(to bottom, rgba(10,7,7,0.2), rgba(10,7,7,0.92));
+  pointer-events:none;
+}
+#progress{
+  position:fixed;top:0;right:0;height:4px;background:var(--red);
+  width:0;z-index:999;transition:width .1s linear;
+  box-shadow:0 0 12px var(--red);
+}
+header{
+  position:fixed;top:12px;left:50%;transform:translateX(-50%);
+  width:min(96%,1180px);
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 18px;
+  background:rgba(18,12,12,0.72);backdrop-filter:blur(18px);
+  border:1px solid var(--glass-b);border-radius:999px;z-index:50;
+}
+.h-badge{
+  display:flex;gap:10px;align-items:center;
+}
+.h-badge .dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.h-badge span{font-size:13px;font-weight:700;letter-spacing:.3px;opacity:.9}
+nav.links{display:flex;gap:18px;font-size:13px}
+nav.links a{color:var(--sand);text-decoration:none;opacity:.8;transition:.3s}
+nav.links a:hover{opacity:1;color:#fff}
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  width:min(96%,1180px);margin:0 auto;
+  padding:140px 0 60px;
+  position:relative;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;
+}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr} header nav{display:none}}
+.eyebrow{
+  display:inline-flex;gap:8px;align-items:center;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(231,0,19,0.15);border:1px solid rgba(231,0,19,0.35);
+  font-size:12px;font-weight:800;color:#ff8a94;letter-spacing:.8px
+}
+.hero h1{
+  font-size:clamp(32px,5vw,62px);font-weight:900;line-height:1.05;margin:18px 0 16px;
+}
+.hero h1 .line1{color:var(--sand);display:block;font-family:'Amiri',serif;font-weight:400;font-size:.62em;letter-spacing:1px}
+.hero h1 .line2{
+  background:linear-gradient(100deg,#fff 30%,#ff3b4a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p.lead{font-size:18px;opacity:.82;max-width:56ch;margin-bottom:22px}
+.meta-cards{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 26px}
+.meta-card{
+  background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(10px);
+  padding:8px 14px;border-radius:12px;font-size:12px;display:flex;gap:8px;align-items:center
+}
+.meta-card b{color:var(--sand)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  padding:12px 22px;border-radius:999px;border:1px solid transparent;
+  font-weight:800;font-size:14px;cursor:pointer;transition:.3s;display:inline-flex;align-items:center;gap:8px;text-decoration:none
+}
+.btn-primary{background:var(--red);color:white;box-shadow:0 8px 30px rgba(231,0,19,0.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(231,0,19,0.5)}
+.btn-ghost{background:rgba(255,255,255,0.06);border-color:var(--glass-b);color:var(--sand)}
+.btn-ghost:hover{background:rgba(255,255,255,0.1)}
+.hero-3d-hint{
+  margin-top:18px;display:flex;gap:10px;align-items:center;font-size:12px;opacity:.7
+}
+.hero-3d-hint .mouse{
+  width:22px;height:34px;border:2px solid rgba(255,255,255,0.3);border-radius:12px;position:relative
+}
+.hero-3d-hint .mouse::after{content:'';position:absolute;left:50%;top:6px;width:4px;height:6px;background:#fff;border-radius:2px;transform:translateX(-50%);animation:wheel 1.6s infinite}
+@keyframes wheel{0%{transform:translate(-50%,0);opacity:1}100%{transform:translate(-50%,10px);opacity:0}}
+.timeline-rail{
+  position:relative;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-b);border-radius:24px;padding:16px;
+  backdrop-filter:blur(16px);
+  transform-style:preserve-3d;perspective:1000px;
+}
+.rail-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;letter-spacing:1px;opacity:.7}
+.rail{
+  display:flex;flex-direction:column;gap:12px;position:relative
+}
+.rail::before{
+  content:'';position:absolute;right:19px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--red),transparent);opacity:.5
+}
+.rail-item{
+  display:flex;gap:12px;align-items:center;
+  padding:12px 12px;border-radius:14px;
+  background:rgba(255,255,255,0.04);border:1px solid transparent;cursor:pointer;transition:.35s
+}
+.rail-item.active{background:rgba(231,0,19,0.18);border-color:rgba(231,0,19,0.35);transform:translateX(-6px) scale(1.02)}
+.rail-item .year{
+  min-width:72px;text-align:center;
+  background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:6px 0;
+  font-weight:900;font-size:13px;color:var(--sand)
+}
+.rail-item .label{font-size:13px;line-height:1.4}
+.rail-item .dot2{width:10px;height:10px;border-radius:50%;background:var(--sand);box-shadow:0 0 0 4px rgba(232,213,181,0.15)}
+.rail-item.active .dot2{background:var(--red);box-shadow:0 0 0 6px rgba(231,0,19,0.25)}
+main{width:min(96%,1180px);margin:0 auto;padding-bottom:120px}
+.glass{
+  background:rgba(20,14,14,0.66);backdrop-filter:blur(18px);
+  border:1px solid var(--glass-b);border-radius:26px;
+  box-shadow:0 20px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.section{margin-top:26px;padding:28px}
+@media(max-width:600px){.section{padding:18px}}
+.section-head{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+.num{
+  width:44px;height:44px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--red),var(--red-dark));
+  font-weight:900;box-shadow:0 8px 20px rgba(231,0,19,0.35)
+}
+.section-head h2{font-size:22px;font-weight:900}
+.section-head p{font-size:12px;opacity:.6;margin-top:2px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr}}
+.obj{
+  padding:18px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
+  border:1px solid var(--glass-b);position:relative;overflow:hidden
+}
+.obj::after{content:'';position:absolute;top:0;right:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:.6}
+.obj h4{font-size:14px;color:var(--sand);margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.obj ul{font-size:13.5px;opacity:.86;padding-right:18px}
+.obj ul li{margin:6px 0}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{
+  padding:10px 14px;border-radius:999px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);
+  font-size:12.5px;display:flex;gap:8px;align-items:center;transition:.3s
+}
+.chip:hover{transform:translateY(-2px);background:rgba(231,0,19,0.12);border-color:rgba(231,0,19,0.3)}
+.persons{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px
+}
+.person{
+  padding:14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-b);
+  display:flex;gap:12px;align-items:flex-start;transition:.3s
+}
+.person:hover{transform:translateY(-3px) rotateX(4deg);background:rgba(255,255,255,0.07)}
+.avatar{
+  min-width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  font-weight:900;background:linear-gradient(135deg,#2a2a2a,#111);border:1px solid var(--glass-b);color:var(--sand)
+}
+.person h5{font-size:13.5px;font-weight:800}
+.person p{font-size:11.5px;opacity:.7;line-height:1.5;margin-top:2px}
+.prob{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch
+}
+@media(max-width:900px){.prob{grid-template-columns:1fr}}
+.prob-box{
+  padding:18px;border-radius:18px;
+  background:radial-gradient(120% 120% at 0% 0%, rgba(231,0,19,0.18), transparent 60%), rgba(255,255,255,0.04);
+  border:1px solid var(--glass-b)
+}
+.q-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.q{
+  padding:12px 14px;border-radius:12px;background:rgba(0,0,0,0.35);border:1px dashed rgba(232,213,181,0.25);
+  font-size:13px;display:flex;gap:10px
+}
+.phase{
+  position:relative;padding-right:34px;margin:22px 0
+}
+.phase::before{
+  content:'';position:absolute;right:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--red),rgba(231,0,19,0));
+}
+.phase-dot{
+  position:absolute;right:2px;top:6px;width:18px;height:18px;border-radius:50%;
+  background:var(--red);border:3px solid #1a0e0e;box-shadow:0 0 0 6px rgba(231,0,19,0.15)
+}
+.phase h3{font-size:18px;font-weight:900;margin-bottom:6px;display:flex;gap:10px;align-items:center}
+.phase h3 span{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(231,0,19,0.18);border:1px solid rgba(231,0,19,0.3);color:#ff9aa3}
+.phase p, .phase li{font-size:14px;opacity:.9}
+.phase ul{padding-right:18px;margin:10px 0}
+.badge-line{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.mini-badge{font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(232,213,181,0.1);border:1px solid rgba(232,213,181,0.2);color:var(--sand)}
+.doc{
+  margin-top:12px;padding:14px;border-radius:14px;
+  background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);
+  font-family:'Amiri',serif;font-size:15px;line-height:1.8
+}
+.timeline-full{
+  display:flex;gap:0;overflow-x:auto;padding:12px 4px 18px;scroll-snap-type:x mandatory;
+  scrollbar-width:thin
+}
+.t-node{
+  min-width:210px;scroll-snap-align:start;
+  padding:14px;border-radius:16px;margin-left:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
+  border:1px solid var(--glass-b);position:relative
+}
+.t-node .t-year{font-weight:900;color:var(--red);font-size:13px}
+.t-node h5{font-size:13px;margin:6px 0}
+.t-node p{font-size:11.5px;opacity:.75;line-height:1.6}
+.activities{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.activities{grid-template-columns:1fr}}
+.act{
+  padding:18px;border-radius:18px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-b)
+}
+.act h4{font-size:15px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.drag-list{display:flex;flex-direction:column;gap:8px}
+.drag-item{
+  padding:10px 12px;border-radius:12px;background:#141010;border:1px solid rgba(255,255,255,0.08);
+  font-size:13px;cursor:grab;display:flex;justify-content:space-between;align-items:center
+}
+.drag-item.dragging{opacity:.5}
+.quiz-q{margin:12px 0}
+.quiz-q p{font-size:13.5px;margin-bottom:8px;font-weight:700}
+.quiz-opt{
+  display:block;width:100%;text-align:right;
+  padding:10px 12px;margin:6px 0;border-radius:10px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--glass-b);
+  font-size:13px;cursor:pointer;transition:.2s
+}
+.quiz-opt:hover{background:rgba(255,255,255,0.08)}
+.quiz-opt.correct{background:rgba(34,197,94,0.18);border-color:rgba(34,197,94,0.4)}
+.quiz-opt.wrong{background:rgba(231,0,19,0.18);border-color:rgba(231,0,19,0.4)}
+footer{
+  margin-top:40px;padding:22px;text-align:center;
+  font-size:12px;opacity:.6
+}
+.label-3d{
+  padding:6px 12px;border-radius:999px;
+  background:rgba(10,7,7,0.8);border:1px solid rgba(231,0,19,0.4);
+  color:#fff;font-size:11px;font-weight:800;white-space:nowrap;
+  backdrop-filter:blur(8px);box-shadow:0 6px 20px rgba(0,0,0,0.5)
+}
+</style>
+</head>
+<body>
+<div id="canvas-container"><canvas id="bg"></canvas></div>
+<div id="vignette"></div>
+<div id="progress"></div>
+
+<header>
+  <div class="h-badge"><div class="dot"></div><span>الجمهورية التونسية • وزارة التربية • أولى ثانوي 2026/2027</span></div>
+  <nav class="links">
+    <a href="#objectives">الأهداف</a>
+    <a href="#phase1">1881-1914</a>
+    <a href="#phase2">بين الحربين</a>
+    <a href="#phase3">1946-1956</a>
+    <a href="#activities">أنشطة</a>
+  </nav>
+  <div style="font-size:12px;font-weight:800;opacity:.8">إعداد الأستاذ رياض سليمي</div>
+</header>
+
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">◍ محور: البلاد التونسية من الإصلاح إلى التحديث • درس تفاعلي ثلاثي الأبعاد</div>
+      <h1><span class="line1">التجربة التونسية في مقاومة الاستعمار الفرنسي</span><span class="line2">من المقاومة المسلحة إلى الاستقلال</span></h1>
+      <p class="lead">رحلة تفاعلية عبر 75 سنة من النضال الوطني: من دخول الجيش الفرنسي سنة 1881 وفرض الحماية، مرورا بالنضال الثقافي والسياسي والنقابي، وصولا إلى الثورة المسلحة واتفاقيات الاستقلال في 20 مارس 1956.</p>
+      <div class="meta-cards">
+        <div class="meta-card">📘 <b>المادة:</b> تاريخ</div>
+        <div class="meta-card">🎓 <b>المستوى:</b> أولى ثانوي</div>
+        <div class="meta-card">⏱️ <b>المدة:</b> حصتان</div>
+        <div class="meta-card">🗺️ <b>المنهج:</b> استقراء - تحليل - تركيب</div>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#objectives">ابدأ الدرس — استكشف الخريطة ثلاثية الأبعاد ↓</a>
+        <a class="btn btn-ghost" href="#timeline-full">الخط الزمني الكامل</a>
+      </div>
+      <div class="hero-3d-hint"><div class="mouse"></div> مرّر للتحرك في النفق الزمني • اسحب للنظر حولك • اضغط على البوابات للانتقال</div>
+    </div>
+    <div class="timeline-rail" id="mini-rail">
+      <div class="rail-title"><span>البوابات الزمنية 3D</span><span style="color:var(--red)">● LIVE</span></div>
+      <div class="rail" id="rail">
+        <div class="rail-item active" data-z="-8" data-target="#phase1"><div class="dot2"></div><div class="year">1881</div><div class="label">دخول الاستعمار والمقاومة المسلحة • معاهدة باردو</div></div>
+        <div class="rail-item" data-z="-22" data-target="#phase1b"><div class="dot2"></div><div class="year">1907</div><div class="label">النضال الثقافي والسياسي • حركة الشباب التونسي</div></div>
+        <div class="rail-item" data-z="-36" data-target="#phase2"><div class="dot2"></div><div class="year">1920-1938</div><div class="label">الحزب الحر الدستوري والجامعة النقابية</div></div>
+        <div class="rail-item" data-z="-50" data-target="#phase3"><div class="dot2"></div><div class="year">1946-1952</div><div class="label">مؤتمر ليلة القدر و الاتحاد العام والثورة المسلحة</div></div>
+        <div class="rail-item" data-z="-64" data-target="#phase4"><div class="dot2"></div><div class="year">1956</div><div class="label">الاستقلال • 20 مارس • نهاية الحماية</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <section id="objectives" class="section glass">
+    <div class="section-head"><div class="num">01</div><div><h2>الأهداف التعليمية</h2><p>ماذا سنحقق بنهاية هذا الدرس؟</p></div></div>
+    <div class="grid-3">
+      <div class="obj"><h4>🧠 الأهداف المعرفية</h4><ul><li>يتعرف على أشكال المقاومة التونسية من 1881 إلى 1956</li><li>يميز بين النضال المسلح والثقافي والسياسي والنقابي</li><li>يستوعب دلالات معاهدتي باردو والمرسى 1881-1883</li><li>يحدد أدوار الأحزاب: الدستوري القديم والجديد</li><li>يفسر عوامل نجاح الحركة الوطنية في تحقيق الاستقلال</li></ul></div>
+      <div class="obj"><h4>🛠️ الأهداف المهارية</h4><ul><li>قراءة خط زمني وترتيب الأحداث تاريخيا</li><li>تحليل وثائق: جريدة الحاضرة، كتاب تونس الشهيدة</li><li>المقارنة بين البرامج السياسية (9 نقاط 1920)</li><li>رسم خريطة ذهنية لمحطات النضال</li><li>استخدام 3D للتمييز المجالي للمقاومة (شمال/وسط/جنوب)</li></ul></div>
+      <div class="obj"><h4>❤️ الأهداف السلوكية / الوجدانية</h4><ul><li>الاعتزاز بالهوية الوطنية والانتماء</li><li>تقدير تضحيات الشهداء: فرحات حشاد، قادة الفلاقة</li><li>تنمية قيم الحوار والعمل النقابي السلمي</li><li>الوعي بأهمية الوحدة الوطنية (مؤتمر ليلة القدر 1946)</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section glass">
+    <div class="section-head"><div class="num">02</div><div><h2>المفاهيم والمصطلحات</h2><p>مفاتيح الفهم</p></div></div>
+    <div class="chips">
+      <div class="chip">🛡️ <b>الحماية:</b> نظام استعماري مقنّع - معاهدة باردو 12 ماي 1881</div>
+      <div class="chip">⛓️ <b>الاستعمار المباشر:</b> معاهدة المرسى 8 جوان 1883 - إلغاء السيادة</div>
+      <div class="chip">⚔️ <b>المقاومة المسلحة:</b> مقاومة القبائل والعروش 1881-1882</div>
+      <div class="chip">📰 <b>النضال الثقافي:</b> الصحافة الوطنية كسلاح توعية</div>
+      <div class="chip">🏛️ <b>الحركة الوطنية:</b> تنظيم سياسي بمطالب واضحة</div>
+      <div class="chip">👷 <b>النقابية:</b> دفاع جماعي عن حقوق العمال التونسيين</div>
+      <div class="chip">🌍 <b>تدويل القضية:</b> نقل الملف إلى الجامعة العربية والأمم المتحدة</div>
+      <div class="chip">🕊️ <b>السيادة المزدوجة:</b> مناورة فرنسية 1952 مرفوضة شعبيا</div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="section-head"><div class="num">03</div><div><h2>الشخصيات المحورية</h2></div></div>
+    <div class="persons">
+      <div class="person"><div class="avatar">ع ب</div><div><h5>علي بوشوشة</h5><p>مؤسس جريدة الحاضرة 1888 - أول جريدة تونسية - خريج الصادقية</p></div></div>
+      <div class="person"><div class="avatar">ع ح</div><div><h5>علي باش حامبة</h5><p>مؤسس التونسي Le Tunisien 1907 - رائد نقد الحماية بالفرنسية</p></div></div>
+      <div class="person"><div class="avatar">ع ث</div><div><h5>عبد العزيز الثعالبي</h5><p>مفكر الحركة الوطنية - كتاب تونس الشهيدة 1920 - مؤسس الدستوري</p></div></div>
+      <div class="person"><div class="avatar">م ح</div><div><h5>محمد علي الحامي</h5><p>مؤسس جامعة عموم العملة 1924 - أول نقابة تونسية - نفي 1925</p></div></div>
+      <div class="person"><div class="avatar">ح ب</div><div><h5>الحبيب بورقيبة</h5><p>مؤسس الحزب الجديد 1934 - مهندس المفاوضات - زعيم الاستقلال</p></div></div>
+      <div class="person"><div class="avatar">ف ح</div><div><h5>فرحات حشاد</h5><p>مؤسس الاتحاد العام التونسي للشغل 20 جانفي 1946 - شهيد 5 ديسمبر 1952</p></div></div>
+      <div class="person"><div class="avatar">ط ل</div><div><h5>الطاهر الأسود & لزهر الشرايطي</h5><p>قادة الثورة المسلحة 1952-1954 - جيش الفلاقة - 3000 مجاهد</p></div></div>
+      <div class="person"><div class="avatar">ط ع</div><div><h5>الطاهر بن عمار</h5><p>رئيس حكومة المفاوضات أوت 1954 - اتفاق الاستقلال الداخلي 3 جوان 1955</p></div></div>
+    </div>
+  </section>
+
+  <section class="section glass">
+    <div class="section-head"><div class="num">04</div><div><h2>المقدمة والإشكالية</h2><p>لماذا نقاوم؟</p></div></div>
+    <div class="prob">
+      <div class="prob-box">
+        <h4 style="color:var(--sand)">المقدمة</h4>
+        <p style="font-size:14.5px;margin-top:8px">بعد فشل تجربة الإصلاحات في القرن 19 وتراكم الديون، وجدت فرنسا ذريعة للتدخل. في أفريل 1881 دخل الجيش الفرنسي من الجزائر ومن البحر بدعوى ملاحقة قبائل خمير. واجه التونسيون الغزو بمقاومة شعبية عفوية، لكن التفوق العسكري فرض <b>معاهدة باردو 12 ماي 1881</b> ثم <b>معاهدة المرسى 8 جوان 1883</b> التي حولت الحماية الشكلية إلى استعمار مباشر: استيلاء على الأراضي، توطين المعمرين، تهميش التونسيين.</p>
+        <div class="doc">«إن دخول فرنسا لم يكن حماية بل احتلالا مقنعا...» - عبد العزيز الثعالبي، تونس الشهيدة</div>
+      </div>
+      <div class="prob-box">
+        <h4 style="color:#ff8a94">الإشكالية المحورية</h4>
+        <div class="q-list">
+          <div class="q">❓ كيف تطورت أشكال المقاومة التونسية من المواجهة المسلحة العفوية سنة 1881 إلى حركة وطنية منظمة قادرة على انتزاع الاستقلال سنة 1956؟</div>
+          <div class="q">❓ ما عوامل التحول من المطالبة بالإصلاحات إلى المطالبة بالاستقلال التام؟</div>
+          <div class="q">❓ ما دور تنوع الروافد (ثقافي - سياسي - نقابي - مسلح) في إرباك المستعمر وإجباره على التفاوض؟</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="phase1" class="section glass">
+    <div class="phase"><div class="phase-dot"></div><h3>العنصر الأول: أشكال النضال قبل الحرب العالمية الأولى <span>1881 - 1914</span></h3>
+      <div class="badge-line"><span class="mini-badge">مقاومة مسلحة</span><span class="mini-badge">نضال ثقافي</span><span class="mini-badge">حركة الشباب التونسي</span></div>
+      <p><b>1- دخول الجيش الفرنسي والمقاومة المسلحة:</b> ردّت القبائل والعروش في الشمال (خمير ومقعد)، الوسط (جلاص وماجر) والجنوب (الهمامة وورغمة) بمعارك شرسة. رغم البسالة، انتصر الجيش الفرنسي لفارق التسليح والتنظيم. فُرضت الحماية، ثم الاستعمار المباشر.</p>
+      <div class="doc">معاهدة باردو: "تتعهد فرنسا بحماية الباي وممتلكاته" - في الواقع انتزعت الخارجية والدفاع والمالية.</div>
+      <p style="margin-top:10px"><b>2- النضال الثقافي:</b> جريدة <b>الحاضرة</b> 1888 لعلي بوشوشة - نخبة صادقية، خطاب معتدل، مطالب اقتصادية واجتماعية، تأسيس فكر وطني بهوية تونسية. ثم <b>جريدة التونسي</b> 1907 فرنسية و1909 عربية لعلي باش حامبة - نقد مباشر للاستعمار بلغة المستعمر نفسه.</p>
+      <p><b>3- النضال السياسي:</b> <b>حركة الشباب التونسي 1907</b> (الثعالبي، الزاوش، باش حامبة) - أول مجموعة ببرنامج سياسي، كفاح قانوني مطلبي، تواصل للمقاومة الثقافية، أسست للعمل الحزبي.</p>
+    </div>
+    <div id="phase1b" class="phase"><div class="phase-dot" style="background:var(--sand)"></div><h3>تحول نوعي: من الثقافي إلى السياسي المنظم</h3><p>أحداث 1911 (الجلاز) و1912 (مقاطعة الترام) أظهرت انتقال الوعي من النخبة إلى الشارع. القمع الفرنسي سرّع نضج الفكرة الوطنية.</p></div>
+  </section>
+
+  <section id="phase2" class="section glass">
+    <div class="phase"><div class="phase-dot"></div><h3>العنصر الثاني: تطور المقاومة بين الحربين <span>1920-1939</span></h3>
+      <div class="badge-line"><span class="mini-badge">الحزب الحر الدستوري</span><span class="mini-badge">الدستوري الجديد 1934</span><span class="mini-badge">جامعة عموم العملة</span></div>
+      <p><b>1- المقاومة السياسية:</b></p>
+      <ul>
+        <li><b>الحزب الحر الدستوري التونسي مارس 1920</b> بقيادة عبد العزيز الثعالبي - برنامج 9 نقاط (فصل السلط، انتخاب المجالس البلدية، قبول التونسيين في الوظائف، تعليم إجباري). استند إلى كتاب <i>تونس الشهيدة</i>. سياسة الوفود: وفد للباي وآخر للمقيم العام لوسيان سان. نشط 1920-1926 دون تحقيق مطالب بسبب تعنت فرنسا.</li>
+        <li><b>الحزب الحر الدستوري الجديد 2 مارس 1934 مؤتمر قصر هلال</b> - بورقيبة، الحبيب ثامر، محمود الماطري - تنظيم محكم: خلايا وشعب. نضالات: تقديم مطالب 1933 للمقيم أرمان غيون، سفر بورقيبة لباريس 1936 لمقابلة وزير الخارجية، مظاهرة 8 أفريل 1938 أمام الإقامة العامة - قمع دموي وسقوط شهداء واعتقال الزعماء (9 أفريل عيد الشهداء).</li>
+      </ul>
+      <p><b>2- النضال النقابي:</b> تأسيس <b>جامعة عموم العملة التونسية 1924</b> لمحمد علي الحامي - أول منظمة نقابية تونسية مستقلة عن النقابات الفرنسية العنصرية. احتجاجات في بنزرت وصفاقس. حلت 1925 وسجن القادة ونفي الحامي إلى الحجاز حيث توفي 1928.</p>
+    </div>
+  </section>
+
+  <section id="phase3" class="section glass">
+    <div class="phase"><div class="phase-dot"></div><h3>العنصر الثالث: من الحرب العالمية الثانية إلى الاستقلال <span>1946-1956</span></h3>
+      <div class="badge-line"><span class="mini-badge">مؤتمر ليلة القدر</span><span class="mini-badge">UGTT</span><span class="mini-badge">الثورة المسلحة</span><span class="mini-badge">تدويل القضية</span></div>
+      <p><b>1- مؤتمر ليلة القدر وتوحيد الصفوف:</b> 23 أوت 1946 - ضم كل القوى الوطنية (أحزاب، جمعيات، نقابات) - رفع شعار <b>الاستقلال التام</b> كهدف وحيد، إعلان أن الشعب قادر على تسيير شؤونه. تأسيس <b>الاتحاد العام التونسي للشغل 20 جانفي 1946</b> بقيادة فرحات حشاد - توحد النضال السياسي والاجتماعي. اغتيال حشاد 5 ديسمبر 1952 على يد المنظمة الإرهابية اليد الحمراء.</p>
+      <p><b>دور الخارج:</b> علي البلهوان في جامعة الدول العربية 1951، شكوى لمجلس الأمن 14 جانفي 1952. حكومة محمد شنيق ومذكرة ديسمبر 1952 (السيادة المزدوجة) - رفضها الوطنيون. قدوم المقيم الجديد جان دي هوتكلوك وقمع شديد. مؤتمر استثنائي للحزب 18 جانفي 1952 يقر المقاومة المسلحة إلى جانب السياسية.</p>
+      <p><b>2- الثورة المسلحة 1952-1954:</b> انطلقت بعد اعتقال الزعماء، شملت كل البلاد بتنظيم محكم. أبرز القادة: الطاهر الأسود، لزهر الشرايطي، صباح الجربوع، مصباح الجربوع. تجاوز عدد المجاهدين 3000. كبدت خسائر للمستعمر والمعمرين وأجبرت فرنسا على التفاوض.</p>
+      <div id="phase4" class="phase" style="margin-top:26px"><div class="phase-dot" style="background:#22c55e;box-shadow:0 0 0 6px rgba(34,197,94,0.2)"></div><h3>الحصول على الاستقلال <span style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:#86efac">20 مارس 1956</span></h3>
+        <ul>
+          <li>الضغط الخارجي والداخلي + هزيمة فرنسا في الهند الصينية والجزائر.</li>
+          <li><b>خطاب منداس فرانس في قرطاج جويلية 1954:</b> استعداد فرنسا لمنح الاستقلال الداخلي.</li>
+          <li>حكومة تفاوضية برئاسة الطاهر بن عمار أوت 1954.</li>
+          <li><b>اتفاقيات 3 جوان 1955:</b> اعتراف بالسيادة التونسية وحكم ذاتي داخلي.</li>
+          <li><b>بروتوكول الاستقلال 20 مارس 1956:</b> إلغاء معاهدة باردو 1881، تونس دولة مستقلة ذات سيادة.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="timeline-full" style="margin-top:18px">
+      <h4 style="font-size:14px;margin-bottom:10px;color:var(--sand)">⏳ الخط الزمني التفاعلي لمحطات النضال</h4>
+      <div class="timeline-full">
+        <div class="t-node"><div class="t-year">12 ماي 1881</div><h5>معاهدة باردو</h5><p>فرض الحماية - بداية الاستعمار المقنع</p></div>
+        <div class="t-node"><div class="t-year">1888</div><h5>جريدة الحاضرة</h5><p>بداية النضال الثقافي - علي بوشوشة</p></div>
+        <div class="t-node"><div class="t-year">1907</div><h5>حركة الشباب التونسي</h5><p>أول تنظيم سياسي - التونسي</p></div>
+        <div class="t-node"><div class="t-year">مارس 1920</div><h5>الحزب الحر الدستوري</h5><p>برنامج 9 نقاط - تونس الشهيدة</p></div>
+        <div class="t-node"><div class="t-year">1924</div><h5>جامعة عموم العملة</h5><p>محمد علي الحامي - أول نقابة</p></div>
+        <div class="t-node"><div class="t-year">2 مارس 1934</div><h5>مؤتمر قصر هلال</h5><p>ميلاد الدستوري الجديد - بورقيبة</p></div>
+        <div class="t-node"><div class="t-year">8-9 أفريل 1938</div><h5>أحداث أفريل</h5><p>مظاهرة وطنية - عيد الشهداء</p></div>
+        <div class="t-node"><div class="t-year">20 جانفي 1946</div><h5>UGTT</h5><p>فرحات حشاد - وحدة النضال</p></div>
+        <div class="t-node"><div class="t-year">23 أوت 1946</div><h5>مؤتمر ليلة القدر</h5><p>شعار الاستقلال التام</p></div>
+        <div class="t-node"><div class="t-year">1952-1954</div><h5>الثورة المسلحة</h5><p>الفلاقة - 3000 مجاهد</p></div>
+        <div class="t-node"><div class="t-year">3 جوان 1955</div><h5>الاستقلال الداخلي</h5><p>اتفاقيات الحكم الذاتي</p></div>
+        <div class="t-node" style="border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.1)"><div class="t-year">20 مارس 1956</div><h5>الاستقلال التام</h5><p>إلغاء باردو - تونس حرة مستقلة 🇹🇳</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section glass">
+    <div class="section-head"><div class="num" style="background:linear-gradient(135deg,#22c55e,#166534)">05</div><div><h2>الخاتمة</h2><p>العبرة التاريخية</p></div></div>
+    <p style="font-size:14.5px">أثبتت التجربة التونسية أن المقاومة الناجحة هي التي نوّعت أساليبها: بدأت مسلحة عفوية، ثم تحولت إلى ثقافية توعوية (الصحافة)، فسياسية منظمة (أحزاب وبرامج)، فنقابية اجتماعية، ثم عادت إلى المسلحة المنظمة مع تدويل القضية. وحدة الصف في مؤتمر ليلة القدر 1946 وتكامل النضالات أجبرت فرنسا على الاعتراف بحق الشعب في تقرير مصيره. الاستقلال لم يكن منحة بل ثمرة تضحيات جسام.</p>
+  </section>
+
+  <section id="activities" class="section glass">
+    <div class="section-head"><div class="num">06</div><div><h2>أنشطة مهارية تفاعلية</h2><p>اختبر فهمك</p></div></div>
+    <div class="activities">
+      <div class="act">
+        <h4>🧩 نشاط 1: رتّب الأحداث زمنيا (اسحب)</h4>
+        <div class="drag-list" id="dragList">
+          <div class="drag-item" draggable="true" data-order="4">مؤتمر قصر هلال 1934</div>
+          <div class="drag-item" draggable="true" data-order="1">معاهدة باردو 1881</div>
+          <div class="drag-item" draggable="true" data-order="5">تأسيس UGTT 1946</div>
+          <div class="drag-item" draggable="true" data-order="2">جريدة التونسي 1907</div>
+          <div class="drag-item" draggable="true" data-order="3">جامعة عموم العملة 1924</div>
+          <div class="drag-item" draggable="true" data-order="6">الاستقلال 1956</div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:12px;padding:8px 16px" id="checkOrder">تحقق من الترتيب</button>
+        <div id="orderResult" style="margin-top:8px;font-size:13px"></div>
+      </div>
+      <div class="act">
+        <h4>✅ نشاط 2: أسئلة فهم سريع</h4>
+        <div class="quiz-q"><p>1- ماذا حولت معاهدة المرسى 1883؟</p>
+          <button class="quiz-opt" data-correct="true">الحماية إلى استعمار مباشر</button>
+          <button class="quiz-opt">الحماية إلى استقلال</button>
+          <button class="quiz-opt">الاستعمار إلى حماية</button>
+        </div>
+        <div class="quiz-q"><p>2- من صاحب كتاب تونس الشهيدة؟</p>
+          <button class="quiz-opt" data-correct="true">عبد العزيز الثعالبي</button>
+          <button class="quiz-opt">الحبيب بورقيبة</button>
+          <button class="quiz-opt">فرحات حشاد</button>
+        </div>
+        <div class="quiz-q"><p>3- ما شعار مؤتمر ليلة القدر 1946؟</p>
+          <button class="quiz-opt">الإصلاحات</button>
+          <button class="quiz-opt" data-correct="true">الاستقلال التام</button>
+          <button class="quiz-opt">السيادة المزدوجة</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>إعداد الأستاذ رياض سليمي • أولى ثانوي • محور البلاد التونسية من الإصلاح إلى التحديث • 2026/2027 • 🇹🇳 المجد والخلود لشهداء تونس</footer>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const canvas = document.getElementById('bg');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0e0a0a, 0.028);
+
+const camera = new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 200);
+camera.position.set(0, 4.5, 14);
+
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(innerWidth, innerHeight);
+labelRenderer.domElement.style.position='fixed';
+labelRenderer.domElement.style.top='0';
+labelRenderer.domElement.style.pointerEvents='none';
+labelRenderer.domElement.style.zIndex='0';
+document.getElementById('canvas-container').appendChild(labelRenderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=0.06;
+controls.minDistance=6;controls.maxDistance=28;
+controls.maxPolarAngle=Math.PI*0.52;
+controls.minPolarAngle=Math.PI*0.28;
+controls.enablePan=false;
+controls.target.set(0,1, -28);
+
+// Lights
+scene.add(new THREE.AmbientLight(0xfff2e0, 0.55));
+const dir = new THREE.DirectionalLight(0xffe7c7, 1.2);
+dir.position.set(8,12,6);dir.castShadow=true;
+dir.shadow.mapSize.set(1024,1024);
+scene.add(dir);
+const redLight = new THREE.PointLight(0xE70013, 3, 30);
+redLight.position.set(-4,3,-10);scene.add(redLight);
+const sandLight = new THREE.PointLight(0xE8D5B5, 2, 25);
+sandLight.position.set(5,2,-40);scene.add(sandLight);
+
+// Ground - deformed plane
+const groundGeo = new THREE.PlaneGeometry(120, 180, 64, 64);
+const pos = groundGeo.attributes.position;
+for(let i=0;i<pos.count;i++){
+  const x=pos.getX(i), y=pos.getY(i);
+  const d = Math.sin(x*0.12)*0.6 + Math.cos(y*0.08)*0.8 + Math.random()*0.15;
+  pos.setZ(i, d* (Math.abs(y)/30) );
+}
+groundGeo.computeVertexNormals();
+const groundMat = new THREE.MeshStandardMaterial({color:0x1a1412, roughness:0.9, metalness:0.1});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x=-Math.PI/2; ground.position.y=-2.2; ground.position.z=-30;
+ground.receiveShadow=true;
+scene.add(ground);
+
+// Stars / dust
+const dustGeo = new THREE.BufferGeometry();
+const dustCount=1800;
+const dustPos=new Float32Array(dustCount*3);
+for(let i=0;i<dustCount;i++){
+  dustPos[i*3]=(Math.random()-0.5)*90;
+  dustPos[i*3+1]=Math.random()*28+0.5;
+  dustPos[i*3+2]=-Math.random()*110-2;
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos,3));
+const dustMat = new THREE.PointsMaterial({size:0.06, color:0xE8D5B5, transparent:true, opacity:0.55, sizeAttenuation:true});
+const dust = new THREE.Points(dustGeo, dustMat);
+scene.add(dust);
+
+// Monuments
+const monuments=[];
+const configs=[
+  {z:-8, year:'1881', title:'بوابة المقاومة المسلحة', color:0x8a2a2a, shape:'cross'},
+  {z:-22, year:'1907', title:'منارة الصحافة الوطنية', color:0xc9a86a, shape:'books'},
+  {z:-36, year:'1934', title:'قصر هلال - الحزب الجديد', color:0xE70013, shape:'arch'},
+  {z:-50, year:'1946-52', title:'الثورة والنقابة', color:0xff6a3d, shape:'fist'},
+  {z:-64, year:'1956', title:'بوابة الاستقلال', color:0x22c55e, shape:'gate'}
+];
+
+function makeLabel(text, cls='label-3d'){
+  const div=document.createElement('div');div.className=cls;div.textContent=text;
+  return new CSS2DObject(div);
+}
+
+configs.forEach((cfg,i)=>{
+  const g=new THREE.Group(); g.position.set((Math.random()-0.5)*4, 0, cfg.z);
+  const baseMat=new THREE.MeshStandardMaterial({color:cfg.color, roughness:0.6, metalness:0.2, emissive:cfg.color, emissiveIntensity:0.18});
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.8,2.2,0.6,6), new THREE.MeshStandardMaterial({color:0x222, roughness:0.8}));
+  base.position.y=-1.6; base.receiveShadow=true; base.castShadow=true; g.add(base);
+
+  let main;
+  if(cfg.shape==='cross'){
+    const v=new THREE.Mesh(new THREE.BoxGeometry(0.25,2.2,0.25), baseMat);
+    const h=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.25,0.25), baseMat);
+    v.position.y=0.2; h.position.y=0.5; main=new THREE.Group(); main.add(v,h);
+    const v2=v.clone(); v2.rotation.z=0.35; v2.position.x=0.7; main.add(v2);
+  }else if(cfg.shape==='books'){
+    main=new THREE.Group();
+    for(let k=0;k<4;k++){
+      const b=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.18,0.8), new THREE.MeshStandardMaterial({color:k%2?0xE8D5B5:0xffffff, roughness:0.7}));
+      b.position.y=k*0.26; b.rotation.y=k*0.1; b.castShadow=true; main.add(b);
+    }
+    main.position.y=0.6;
+  }else if(cfg.shape==='arch'){
+    main=new THREE.Group();
+    const pillarL=new THREE.Mesh(new THREE.BoxGeometry(0.35,2.4,0.35), baseMat); pillarL.position.set(-0.9,0.3,0);
+    const pillarR=pillarL.clone(); pillarR.position.x=0.9;
+    const top=new THREE.Mesh(new THREE.BoxGeometry(2.6,0.35,0.45), baseMat); top.position.y=1.5;
+    main.add(pillarL,pillarR,top);
+  }else if(cfg.shape==='fist'){
+    main=new THREE.Group();
+    const arm=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.28,1.6,8), baseMat); arm.position.y=0.4;
+    const fist=new THREE.Mesh(new THREE.SphereGeometry(0.38,12,12), baseMat); fist.position.y=1.35; fist.scale.set(1,0.85,1);
+    main.add(arm,fist);
+  }else{ // gate 1956
+    main=new THREE.Group();
+    const l=new THREE.Mesh(new THREE.BoxGeometry(0.4,2.8,0.5), new THREE.MeshStandardMaterial({color:0xE8D5B5, emissive:0xE8D5B5, emissiveIntensity:0.15})); l.position.set(-1.1,0.4,0);
+    const r=l.clone(); r.position.x=1.1;
+    const t=new THREE.Mesh(new THREE.BoxGeometry(3.2,0.5,0.6), new THREE.MeshStandardMaterial({color:0x22c55e, emissive:0x22c55e, emissiveIntensity:0.25})); t.position.y=2;
+    const flag=new THREE.Mesh(new THREE.PlaneGeometry(1.2,0.7), new THREE.MeshBasicMaterial({color:0xE70013, side:THREE.DoubleSide}));
+    flag.position.set(0,2.6,0.35); flag.rotation.y=0.2;
+    main.add(l,r,t,flag);
+  }
+  main.traverse(o=>{if(o.isMesh){o.castShadow=true; o.receiveShadow=true}});
+  g.add(main);
+  g.userData.main=main; g.userData.baseColor=cfg.color; g.userData.index=i;
+
+  const light=new THREE.PointLight(cfg.color, 1.8, 8); light.position.set(0,1.2,0); g.add(light);
+  g.userData.light=light;
+
+  const lbl=makeLabel(`${cfg.year} — ${cfg.title}`); lbl.position.set(0,3.2,0); g.add(lbl);
+
+  scene.add(g); monuments.push(g);
+});
+
+// Tunisian flag particles rising near last gate
+const flagParts=new THREE.BufferGeometry();
+const fpCount=120;
+const fpPos=new Float32Array(fpCount*3);
+for(let i=0;i<fpCount;i++){fpPos[i*3]=(Math.random()-0.5)*2; fpPos[i*3+1]=Math.random()*4; fpPos[i*3+2]=-64+(Math.random()-0.5)*2}
+flagParts.setAttribute('position', new THREE.BufferAttribute(fpPos,3));
+const fpMat=new THREE.PointsMaterial({size:0.12,color:0xff2233,transparent:true,opacity:0.7});
+const fpPoints=new THREE.Points(flagParts, fpMat); scene.add(fpPoints);
+
+// Scroll & interaction
+let targetZ=14, targetX=0, smoothZ=14, smoothX=0;
+let mouseX=0, mouseY=0;
+addEventListener('mousemove', e=>{
+  mouseX=(e.clientX/innerWidth-0.5)*2;
+  mouseY=(e.clientY/innerHeight-0.5)*2;
+});
+const railItems=[...document.querySelectorAll('.rail-item')];
+function updateProgress(){
+  const h=document.documentElement;
+  const scrolled=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  document.getElementById('progress').style.width=scrolled+'%';
+  const scrollFactor=h.scrollTop*0.018;
+  targetZ=14 - scrollFactor*3.2;
+  targetX=mouseX*1.2;
+  // active rail
+  let closest=0, minD=Infinity;
+  monuments.forEach((m,i)=>{
+    const d=Math.abs(m.position.z - (targetZ-12));
+    if(d<minD){minD=d; closest=i;}
+  });
+  railItems.forEach((el,i)=>el.classList.toggle('active', i===closest));
+  monuments.forEach((m,i)=>{
+    const isActive=i===closest;
+    m.userData.light.intensity=isActive?3.2:1.2;
+    m.scale.setScalar(isActive?1.08:1);
+  });
+}
+addEventListener('scroll', updateProgress, {passive:true});
+updateProgress();
+
+railItems.forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const target=document.querySelector(el.dataset.target);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+// raycast for clicking monuments (pointer events on label renderer disabled, use canvas)
+const raycaster=new THREE.Raycaster(), pointer=new THREE.Vector2();
+canvas.addEventListener('click', e=>{
+  pointer.x=(e.clientX/innerWidth)*2-1; pointer.y=-(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera(pointer, camera);
+  const intersects=raycaster.intersectObjects(monuments.map(m=>m.userData.main), true);
+  if(intersects.length){
+    let obj=intersects[0].object;
+    while(obj.parent && !monuments.includes(obj.parent)) obj=obj.parent;
+    const group=obj.parent && monuments.includes(obj.parent) ? obj.parent : monuments.find(m=>m.children.includes(obj)) || monuments[0];
+    const idx=monuments.indexOf(group);
+    const map=['#phase1','#phase1b','#phase2','#phase3','#phase4'];
+    document.querySelector(map[idx])?.scrollIntoView({behavior:'smooth'});
+  }
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  smoothZ+= (targetZ - smoothZ)*0.06;
+  smoothX+= (targetX - smoothX)*0.04;
+  camera.position.z = smoothZ;
+  camera.position.x = smoothX + mouseX*0.6;
+  camera.position.y = 4.5 + mouseY*0.5 + (14 - smoothZ)*0.06;
+  controls.target.set(smoothX*0.3, 1 + (14 - smoothZ)*0.02, smoothZ - 14);
+  controls.update();
+
+  const t=performance.now()*0.001;
+  monuments.forEach((m,i)=>{
+    m.userData.main.rotation.y = Math.sin(t*0.3 + i)*0.18;
+    m.position.y = Math.sin(t*0.6 + i*1.2)*0.12;
+  });
+  dust.rotation.y = t*0.02;
+  // flag particles rise
+  const p=flagParts.attributes.position;
+  for(let i=0;i<fpCount;i++){
+    p.array[i*3+1]+=0.012;
+    if(p.array[i*3+1]>6) p.array[i*3+1]=0;
+  }
+  p.needsUpdate=true;
+
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+}
+animate();
+
+addEventListener('resize', ()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  labelRenderer.setSize(innerWidth, innerHeight);
+});
+
+// --- activities JS ---
+const dragList=document.getElementById('dragList');
+let dragSrc=null;
+dragList.querySelectorAll('.drag-item').forEach(item=>{
+  item.addEventListener('dragstart', e=>{dragSrc=item; item.classList.add('dragging'); e.dataTransfer.effectAllowed='move'});
+  item.addEventListener('dragend', ()=>item.classList.remove('dragging'));
+  item.addEventListener('dragover', e=>{e.preventDefault();});
+  item.addEventListener('drop', e=>{
+    e.preventDefault();
+    if(dragSrc && dragSrc!==item){
+      const items=[...dragList.children];
+      const srcIdx=items.indexOf(dragSrc), targetIdx=items.indexOf(item);
+      if(srcIdx<targetIdx) item.after(dragSrc); else item.before(dragSrc);
+    }
+  });
+});
+document.getElementById('checkOrder').addEventListener('click', ()=>{
+  const items=[...dragList.children];
+  const order=items.map(i=>+i.dataset.order);
+  const correct=[1,2,3,4,5,6];
+  const isCorrect=order.every((v,i)=>v===correct[i]);
+  document.getElementById('orderResult').innerHTML=isCorrect ? '✅ ممتاز! الترتيب صحيح - من باردو إلى الاستقلال.' : '❌ الترتيب غير صحيح، حاول مرة أخرى. تلميح: ابدأ بـ 1881';
+});
+
+document.querySelectorAll('.quiz-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const parent=btn.closest('.quiz-q');
+    parent.querySelectorAll('.quiz-opt').forEach(b=>{b.classList.remove('correct','wrong');});
+    if(btn.dataset.correct) btn.classList.add('correct'); else btn.classList.add('wrong');
+  });
+});
+
+// card tilt effect
+document.querySelectorAll('.glass').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX - r.left)/r.width -0.5;
+    const y=(e.clientY - r.top)/r.height -0.5;
+    card.style.transform=`perspective(1000px) rotateY(${x*4}deg) rotateX(${-y*4}deg)`;
+  });
+  card.addEventListener('mouseleave', ()=>card.style.transform='');
+});
+</script>
+</body>
+  </html>
